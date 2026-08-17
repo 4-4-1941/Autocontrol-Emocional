@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Autocontrol Emocional · ABCDE</title>
+<style>
+  :root {
+    --bg: #f4f1eb;
+    --bg2: #eee9de;
+    --card: #faf8f4;
+    --card2: #f0ede6;
+    --border: #d6cfc0;
+    --text: #2d2a24;
+    --text2: #6b6356;
+    --text3: #9e9386;
+    --accent: #4a7c6f;
+    --accent2: #5b8fa0;
+    --accent-light: #d4ebe5;
+    --accent2-light: #d4eaf2;
+    --warm: #c17f4a;
+    --warm-light: #f5e6d5;
+    --danger: #b5534a;
+    --danger-light: #f5e0de;
+    --shadow: 0 2px 12px rgba(45,42,36,0.08);
+    --shadow2: 0 4px 24px rgba(45,42,36,0.13);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --nav-h: 64px;
+    --header-h: 70px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: 'Georgia', 'Times New Roman', serif; background: var(--bg); color: var(--text); overflow: hidden; }
+  #root { display: flex; flex-direction: column; height: 100%; max-width: 680px; margin: 0 auto; position: relative; background: var(--bg); box-shadow: var(--shadow2); }
+
+  /* HEADER */
+  .app-header { height: var(--header-h); background: var(--card); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; padding: 0 20px; flex-shrink: 0; }
+  .app-header h1 { font-size: 1.22rem; font-weight: 700; color: var(--accent); letter-spacing: -0.01em; }
+  .app-header p { font-size: 0.7rem; color: var(--text3); font-family: 'Courier New', monospace; letter-spacing: 0.08em; margin-top: 1px; }
+  .header-row { display: flex; align-items: center; justify-content: space-between; }
+  .task-count { font-size: 0.68rem; background: var(--accent-light); color: var(--accent); padding: 3px 9px; border-radius: 20px; font-family: 'Courier New', monospace; }
+
+  /* CONTENT AREA */
+  .content { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: calc(var(--nav-h) + 12px); }
+  .content::-webkit-scrollbar { width: 4px; }
+  .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* BOTTOM NAV */
+  .bottom-nav { height: var(--nav-h); background: var(--card); border-top: 1px solid var(--border); display: flex; align-items: stretch; flex-shrink: 0; }
+  .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: none; background: transparent; cursor: pointer; color: var(--text3); font-size: 0.6rem; font-family: inherit; letter-spacing: 0.03em; transition: color 0.2s, background 0.2s; padding: 4px 2px; -webkit-tap-highlight-color: transparent; }
+  .nav-btn.active { color: var(--accent); }
+  .nav-btn.active .nav-icon { background: var(--accent-light); }
+  .nav-icon { width: 36px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+  .nav-icon svg { width: 18px; height: 18px; }
+
+  /* CARDS & SECTIONS */
+  .section { padding: 18px 16px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px; }
+  .card-title { font-size: 0.78rem; font-family: 'Courier New', monospace; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 10px; }
+
+  /* STEP WIZARD */
+  .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding: 14px 16px; background: var(--card); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .step-dots { display: flex; gap: 6px; }
+  .step-dot { width: 28px; height: 6px; border-radius: 3px; background: var(--border); transition: background 0.3s; }
+  .step-dot.active { background: var(--accent); }
+  .step-dot.done { background: var(--accent-light); border: 1px solid var(--accent); }
+  .step-label { font-size: 0.72rem; color: var(--text3); font-family: 'Courier New', monospace; letter-spacing: 0.06em; }
+  .step-title { font-size: 1.15rem; color: var(--text); margin-bottom: 6px; }
+  .step-desc { font-size: 0.82rem; color: var(--text2); line-height: 1.5; margin-bottom: 14px; }
+  .step-letter { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: white; font-size: 1.1rem; font-weight: 700; flex-shrink: 0; }
+
+  /* FORM ELEMENTS */
+  textarea, input[type=text], select { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; font-family: inherit; font-size: 0.9rem; color: var(--text); resize: vertical; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+  textarea:focus, input[type=text]:focus, select:focus { border-color: var(--accent); background: var(--card); }
+  textarea { min-height: 90px; line-height: 1.55; }
+  label { display: block; font-size: 0.78rem; color: var(--text2); margin-bottom: 6px; font-style: italic; }
+  .field { margin-bottom: 14px; }
+
+  /* SLIDER */
+  .slider-wrap { display: flex; align-items: center; gap: 12px; }
+  input[type=range] { flex: 1; -webkit-appearance: none; height: 5px; border-radius: 3px; background: var(--border); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 1px 4px rgba(74,124,111,0.3); }
+  .slider-val { min-width: 36px; text-align: center; font-size: 1.1rem; font-weight: 700; color: var(--accent); font-family: 'Courier New', monospace; }
+
+  /* CHIPS */
+  .chip-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; background: var(--accent-light); color: var(--accent); border-radius: 20px; padding: 5px 12px; font-size: 0.78rem; }
+  .chip-del { background: none; border: none; cursor: pointer; color: var(--accent); font-size: 0.85rem; padding: 0; line-height: 1; }
+  .chip-input-row { display: flex; gap: 8px; }
+  .chip-input-row input { flex: 1; min-height: unset; }
+  .chip-input-row button { flex-shrink: 0; }
+
+  /* EMOTIONS */
+  .emotion-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .emotion-row select { flex: 1; min-height: unset; padding: 10px 12px; }
+  .emotion-del { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; cursor: pointer; color: var(--text3); font-size: 0.85rem; flex-shrink: 0; }
+
+  /* DISTORTION CHECKBOXES */
+  .dist-item { border: 1.5px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; overflow: hidden; transition: border-color 0.2s; }
+  .dist-item.checked { border-color: var(--accent); background: var(--accent-light); }
+  .dist-check-row { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .dist-check-row input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; accent-color: var(--accent); }
+  .dist-check-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .dist-check-def { font-size: 0.76rem; color: var(--text2); margin-top: 2px; line-height: 1.4; }
+  .dist-questions { padding: 0 13px 12px 41px; }
+  .dist-question { font-size: 0.78rem; color: var(--accent); background: white; border-left: 3px solid var(--accent); padding: 6px 10px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 5px; line-height: 1.45; font-style: italic; }
+
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: none; border-radius: var(--radius-sm); padding: 13px 20px; font-family: inherit; font-size: 0.88rem; cursor: pointer; font-weight: 600; transition: all 0.18s; -webkit-tap-highlight-color: transparent; width: 100%; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:active { background: #3a6459; }
+  .btn-secondary { background: var(--card2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:active { background: var(--border); }
+  .btn-danger { background: var(--danger-light); color: var(--danger); border: 1px solid var(--danger); }
+  .btn-danger:active { background: var(--danger); color: white; }
+  .btn-whatsapp { background: #25d366; color: white; }
+  .btn-whatsapp:active { background: #1aad53; }
+  .btn-sm { padding: 8px 14px; font-size: 0.78rem; width: auto; }
+  .btn-row { display: flex; gap: 8px; }
+  .btn-row .btn { flex: 1; }
+
+  /* HISTORY ITEMS */
+  .hist-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px; margin-bottom: 10px; }
+  .hist-date { font-size: 0.68rem; color: var(--text3); font-family: 'Courier New', monospace; letter-spacing: 0.05em; margin-bottom: 5px; }
+  .hist-situation { font-size: 0.9rem; color: var(--text); margin-bottom: 8px; line-height: 1.4; font-style: italic; }
+  .hist-emotions { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+  .emotion-badge { background: var(--warm-light); color: var(--warm); border-radius: 20px; padding: 3px 10px; font-size: 0.72rem; font-weight: 600; }
+  .dist-badge { background: var(--accent2-light); color: var(--accent2); border-radius: 20px; padding: 3px 10px; font-size: 0.7rem; }
+  .hist-expanded { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; display: none; }
+  .hist-expanded.open { display: block; }
+  .hist-section { margin-bottom: 10px; }
+  .hist-section-label { font-size: 0.68rem; font-family: 'Courier New', monospace; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 4px; }
+  .hist-section-content { font-size: 0.84rem; color: var(--text); line-height: 1.55; }
+  .toggle-btn { background: none; border: none; color: var(--accent); font-size: 0.78rem; cursor: pointer; font-family: inherit; padding: 0; }
+
+  /* DISTORTION LIBRARY CARDS */
+  .dist-lib-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px; margin-bottom: 10px; }
+  .dist-lib-num { font-size: 0.68rem; font-family: 'Courier New', monospace; color: var(--text3); }
+  .dist-lib-name { font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 3px 0 6px; }
+  .dist-lib-def { font-size: 0.82rem; color: var(--text); line-height: 1.5; margin-bottom: 8px; }
+  .dist-lib-example { font-size: 0.78rem; color: var(--text2); background: var(--bg2); border-radius: var(--radius-sm); padding: 8px 11px; margin-bottom: 8px; line-height: 1.45; font-style: italic; }
+  .dist-lib-qs { display: flex; flex-direction: column; gap: 4px; }
+  .dist-lib-q { font-size: 0.76rem; color: var(--accent); background: var(--accent-light); padding: 5px 10px; border-radius: var(--radius-sm); line-height: 1.4; }
+
+  /* GUIDE */
+  .guide-hero { background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); padding: 24px 20px; margin-bottom: 12px; }
+  .guide-hero h2 { color: white; font-size: 1.2rem; margin-bottom: 6px; }
+  .guide-hero p { color: rgba(255,255,255,0.82); font-size: 0.82rem; line-height: 1.5; }
+  .guide-section { margin-bottom: 14px; }
+  .guide-section h3 { font-size: 0.85rem; color: var(--accent); margin-bottom: 6px; letter-spacing: 0.02em; }
+  .guide-section p, .guide-section li { font-size: 0.83rem; color: var(--text2); line-height: 1.6; }
+  .guide-section ol, .guide-section ul { padding-left: 18px; }
+  .guide-section li { margin-bottom: 4px; }
+  .abc-diagram { display: flex; gap: 0; margin: 10px 0; border-radius: var(--radius-sm); overflow: hidden; }
+  .abc-box { flex: 1; padding: 10px 6px; text-align: center; }
+  .abc-box:nth-child(1) { background: var(--accent2-light); }
+  .abc-box:nth-child(2) { background: var(--warm-light); }
+  .abc-box:nth-child(3) { background: var(--danger-light); }
+  .abc-letter { font-size: 1.3rem; font-weight: 700; }
+  .abc-box:nth-child(1) .abc-letter { color: var(--accent2); }
+  .abc-box:nth-child(2) .abc-letter { color: var(--warm); }
+  .abc-box:nth-child(3) .abc-letter { color: var(--danger); }
+  .abc-name { font-size: 0.65rem; color: var(--text3); margin-top: 2px; line-height: 1.2; }
+
+  /* EXAMPLE TASK */
+  .example-task { background: var(--card); border: 2px dashed var(--accent); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .example-tag { font-size: 0.65rem; font-family: 'Courier New', monospace; letter-spacing: 0.1em; color: var(--accent); background: var(--accent-light); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 8px; }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 48px 24px; color: var(--text3); }
+  .empty svg { opacity: 0.3; margin-bottom: 12px; }
+  .empty p { font-size: 0.85rem; line-height: 1.5; }
+
+  /* CONFIRM OVERLAY */
+  .overlay { position: fixed; inset: 0; background: rgba(45,42,36,0.5); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; display: none; }
+  .overlay.open { display: flex; }
+  .confirm-box { background: var(--card); border-radius: var(--radius); padding: 24px; max-width: 320px; width: 100%; box-shadow: var(--shadow2); }
+  .confirm-box h3 { font-size: 1rem; margin-bottom: 8px; color: var(--text); }
+  .confirm-box p { font-size: 0.82rem; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: calc(var(--nav-h) + 12px); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.82rem; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; z-index: 200; white-space: nowrap; max-width: calc(100vw - 40px); text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* SCROLLBAR HIDDEN on mobile */
+  .content { -webkit-overflow-scrolling: touch; }
+
+  @media (min-width: 480px) {
+    .section { padding: 22px 22px; }
+    .step-header { padding: 16px 22px; }
+    textarea { min-height: 110px; }
+  }
+</style>
+</head>
+<body>
+<div id="root">
+  <div class="app-header">
+    <div class="header-row">
+      <div>
+        <h1>Autocontrol Emocional</h1>
+        <p>Metodo ABCDE · Ellis &amp; Beck</p>
+      </div>
+      <span class="task-count" id="taskCount">0 tareas</span>
+    </div>
+  </div>
+
+  <div class="content" id="mainContent">
+    <!-- Sections loaded here -->
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showTab('nueva')" id="tab-nueva">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      </div>
+      Nueva
+    </button>
+    <button class="nav-btn" onclick="showTab('distorsiones')" id="tab-distorsiones">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      Dist.
+    </button>
+    <button class="nav-btn" onclick="showTab('historial')" id="tab-historial">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+      </div>
+      Historial
+    </button>
+    <button class="nav-btn" onclick="showTab('guia')" id="tab-guia">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+      Guia
+    </button>
+  </nav>
+</div>
+
+<div class="overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3 id="confirmTitle">Confirmar</h3>
+    <p id="confirmMsg"></p>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn btn-danger btn-sm" id="confirmOkBtn">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// DATA: 15 DISTORSIONES COGNITIVAS
+// ============================================================
+const DISTORSIONES = [
+  {
+    id: 1,
+    nombre: "Filtraje o Filtro mental",
+    desc: "Te concentras exclusivamente en un aspecto negativo ignorando todo lo demas. Como ver todo a traves de un filtro oscuro.",
+    ejemplo: "Recibes 9 elogios en el trabajo y una critica leve, pero solo piensas en la critica.",
+    preguntas: [
+      "¿Hay algun aspecto positivo de la situacion que estoy ignorando?",
+      "¿Si se lo contara a alguien de confianza, que veria que yo no estoy viendo?",
+      "¿Estoy descartando datos importantes por no encajar con lo que siento?"
+    ]
+  },
+  {
+    id: 2,
+    nombre: "Pensamiento polarizado (Todo o nada)",
+    desc: "Ves las cosas en blanco o negro, sin terminos medios. Si no es perfecto, es un fracaso total.",
+    ejemplo: "Cometo un error en la presentacion y pienso: 'Soy un completo fracasado'.",
+    preguntas: [
+      "¿Existe alguna zona gris entre estos dos extremos?",
+      "¿Esta situacion se puede valorar en una escala del 1 al 10 en lugar de con un si/no absoluto?",
+      "¿Que diria alguien neutral que viera esto?"
+    ]
+  },
+  {
+    id: 3,
+    nombre: "Sobregeneralizacion",
+    desc: "Sacas una conclusion general negativa a partir de un unico incidente. Palabras clave: 'siempre', 'nunca', 'todo', 'nadie'.",
+    ejemplo: "Fallo una vez en algo y pienso: 'Siempre me sale todo mal' o 'Nunca puedo con nada'.",
+    preguntas: [
+      "¿Es realmente cierto 'siempre' o 'nunca'? Piensa en excepciones concretas.",
+      "¿Estoy generalizando a partir de un solo caso?",
+      "¿Que porcentaje de las veces ocurre esto de verdad?"
+    ]
+  },
+  {
+    id: 4,
+    nombre: "Lectura de mente",
+    desc: "Asumes que sabes lo que piensan otros sobre ti, sin pruebas reales.",
+    ejemplo: "Mi amigo no me escribe y pienso: 'Seguro esta enojado conmigo y ya no le importo'.",
+    preguntas: [
+      "¿Tengo evidencia real de que eso es lo que piensan?",
+      "¿Podria haber otras explicaciones para su comportamiento?",
+      "¿Le he preguntado directamente para verificarlo?"
+    ]
+  },
+  {
+    id: 5,
+    nombre: "Adivinacion o Vision catastrofica",
+    desc: "Predices que las cosas saldran mal y actuas como si fuera un hecho seguro.",
+    ejemplo: "Antes de una entrevista: 'Se que voy a quedarme en blanco y voy a arruinarlo todo'.",
+    preguntas: [
+      "¿En que me baso para predecir ese resultado negativo?",
+      "¿Cuantas veces he predicho lo peor y no ha ocurrido?",
+      "¿Que es lo mas probable que ocurra realmente?"
+    ]
+  },
+  {
+    id: 6,
+    nombre: "Magnificacion y Minimizacion",
+    desc: "Exageras lo negativo y empequeñeces lo positivo. Lo malo es enorme; lo bueno, insignificante.",
+    ejemplo: "Hago un proyecto excelente pero lo descarto como 'suerte', y un pequeño error lo veo como un desastre.",
+    preguntas: [
+      "Si lo positivo le pasara a un amigo, ¿lo minimizaria tambien?",
+      "¿Estoy usando varas de medir distintas para lo bueno y lo malo?",
+      "¿Que tan grave es esto en una escala objetiva del 1 al 10?"
+    ]
+  },
+  {
+    id: 7,
+    nombre: "Razonamiento emocional",
+    desc: "Concluyes que algo es verdad porque asi lo sientes: 'Lo siento, luego es cierto'.",
+    ejemplo: "Siento que soy un fracasado, por lo tanto, soy un fracasado. Me siento culpable, entonces debo haber hecho algo malo.",
+    preguntas: [
+      "¿Los sentimientos son hechos o interpretaciones?",
+      "¿Que evidencia objetiva, independiente de como me siento, tengo?",
+      "¿Podria sentir algo y que no sea verdad?"
+    ]
+  },
+  {
+    id: 8,
+    nombre: "Deberias / Exigencias absolutas",
+    desc: "Te impones reglas rigidas con palabras absolutas: 'debo', 'tengo que', 'deberia'. Generan culpa y frustración cuando no se cumplen.",
+    ejemplo: "'Debo caerle bien a todo el mundo' o 'No deberia cometer errores nunca'.",
+    preguntas: [
+      "¿Por que 'debo' o 'tengo que'? ¿Quien establecio esa regla como ley absoluta?",
+      "¿Que ocurriria si cambiara 'debo' por 'preferiria'?",
+      "¿Aplicaria esta exigencia tan rigida a un amigo?"
+    ]
+  },
+  {
+    id: 9,
+    nombre: "Etiquetado global",
+    desc: "Te pones una etiqueta negativa y global a ti mismo o a otros, en lugar de describir el comportamiento especifico.",
+    ejemplo: "'Soy un inutil', 'Soy un fracasado', 'Es un irresponsable', basandose en un error concreto.",
+    preguntas: [
+      "¿Soy realmente 'todo' eso o solo cometi un error especifico en este momento?",
+      "¿Que evidencia REAL hay de que esa etiqueta es verdad en su totalidad?",
+      "¿Que diria si fuera un amigo el que comete ese error?"
+    ]
+  },
+  {
+    id: 10,
+    nombre: "Personalizacion",
+    desc: "Te atribuyes responsabilidad de eventos negativos externos que no dependen totalmente de ti.",
+    ejemplo: "Mi hijo saco mala nota. Pienso: 'Soy una mala madre/padre, esto es mi culpa'.",
+    preguntas: [
+      "¿Que otros factores contribuyeron a esta situacion, ademas de yo?",
+      "¿Estoy asumiendo el 100% de responsabilidad cuando hay mas causas?",
+      "¿Que parte es realmente mia y que parte no lo es?"
+    ]
+  },
+  {
+    id: 11,
+    nombre: "Falacia de control",
+    desc: "Sientes que eres responsable de todo (hipercontrol) o que no puedes hacer nada (indefension).",
+    ejemplo: "Hipercontrol: 'Soy responsable de que todos esten bien'. Indefension: 'No puedo hacer nada para cambiar esto'.",
+    preguntas: [
+      "¿Que parte de la situacion si esta bajo mi control?",
+      "¿Que acciones concretas puedo tomar, aunque sean pequeñas?",
+      "¿Estoy exagerando mi influencia (o mi falta de ella) en la situacion?"
+    ]
+  },
+  {
+    id: 12,
+    nombre: "Falacia de justicia",
+    desc: "Crees que la vida debe ser justa segun tus normas y te resientes cuando no lo es.",
+    ejemplo: "'No es justo que trabaje mas que el y el gane mas'. 'La vida deberia ser justa'.",
+    preguntas: [
+      "¿La vida garantiza siempre la justicia segun mis criterios?",
+      "¿Exigir justicia me ayuda a resolver la situacion o me genera mas sufrimiento?",
+      "¿Que puedo hacer de forma practica en lugar de esperar que 'sea justo'?"
+    ]
+  },
+  {
+    id: 13,
+    nombre: "Culpar",
+    desc: "Culpas a los demas de tus emociones o problemas, sin asumir tu parte de responsabilidad.",
+    ejemplo: "'Es culpa suya que yo este asi de mal'. 'Si no fuera por el, yo estaria bien'.",
+    preguntas: [
+      "¿Estoy cediendo el control de mis emociones a otra persona?",
+      "¿Que parte de esta situacion si depende de mis reacciones o decisiones?",
+      "¿Culpar cambia algo o me ayuda a sentirme mejor realmente?"
+    ]
+  },
+  {
+    id: 14,
+    nombre: "Falacia de cambio",
+    desc: "Crees que tu bienestar depende de que los demas cambien. Presionas a otros para que cambien.",
+    ejemplo: "'Si el cambiara, yo seria feliz'. 'Solo necesito que mi pareja sea mas considerada y todo iria bien'.",
+    preguntas: [
+      "¿Puedo ser responsable de mi bienestar sin que otros cambien primero?",
+      "¿Que puedo cambiar yo en mi forma de responder a esta situacion?",
+      "¿Cuanto de mi felicidad estoy poniendo en manos de otra persona?"
+    ]
+  },
+  {
+    id: 15,
+    nombre: "Tener siempre la razon",
+    desc: "Necesitas demostrar que tienes razon en todo, aunque el costo sea el conflicto relacional.",
+    ejemplo: "'Tengo que demostrar que estoy en lo correcto'. No puedes aceptar criticas ni errores propios.",
+    preguntas: [
+      "¿Es mas importante tener razon o mantener una buena relacion?",
+      "¿Podria la otra persona tener aunque sea algo de razon?",
+      "¿Que perderia si admitiera que me equivoque en algo?"
+    ]
+  },
+  {
+    id: 16,
+    nombre: "Falacia de recompensa divina",
+    desc: "Crees que tu sacrificio o buen comportamiento tiene que ser recompensado automaticamente, y te amargas si no lo es.",
+    ejemplo: "'Me he esforzado tanto, merecia que me lo reconocieran'. 'Hago tanto por todos y nadie lo agradece'.",
+    preguntas: [
+      "¿El esfuerzo garantiza siempre el reconocimiento externo?",
+      "¿Puedo encontrar satisfaccion en mi esfuerzo independientemente del resultado?",
+      "¿Estoy ayudando por conviccion o esperando un pago emocional?"
+    ]
+  }
+];
+
+const EMOCIONES = ["Colera / Ira", "Ansiedad", "Tristeza", "Miedo", "Culpa", "Verguenza", "Frustracion", "Otro"];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentTab = 'nueva';
+let currentStep = 0; // 0=A,1=B,2=C,3=D,4=E
+let taskData = {
+  situacion: '',
+  pensamientos: [],
+  emociones: [],
+  distorsiones: [],
+  cuestionamiento: '',
+  alternativa: ''
+};
+let pensInput = '';
+let tasks = [];
+let confirmCallback = null;
+let expandedTasks = {};
+
+// ============================================================
+// STORAGE
+// ============================================================
+function saveTasks() {
+  localStorage.setItem('abcde_tasks', JSON.stringify(tasks));
+  updateTaskCount();
+}
+function loadTasks() {
+  try { tasks = JSON.parse(localStorage.getItem('abcde_tasks') || '[]'); } catch(e) { tasks = []; }
+  updateTaskCount();
+}
+function updateTaskCount() {
+  const el = document.getElementById('taskCount');
+  if (el) el.textContent = tasks.length + (tasks.length === 1 ? ' tarea' : ' tareas');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ============================================================
+// CONFIRM
+// ============================================================
+function openConfirm(title, msg, cb) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent = msg;
+  confirmCallback = cb;
+  document.getElementById('confirmOkBtn').onclick = () => { closeConfirm(); if(confirmCallback) confirmCallback(); };
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('open');
+  confirmCallback = null;
+}
+
+// ============================================================
+// TAB NAVIGATION
+// ============================================================
+function showTab(tab) {
+  currentTab = tab;
+  ['nueva','distorsiones','historial','guia'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+  });
+  render();
+}
+
+// ============================================================
+// MAIN RENDER
+// ============================================================
+function render() {
+  const c = document.getElementById('mainContent');
+  if (currentTab === 'nueva') c.innerHTML = renderNueva();
+  else if (currentTab === 'distorsiones') c.innerHTML = renderDistorsiones();
+  else if (currentTab === 'historial') c.innerHTML = renderHistorial();
+  else if (currentTab === 'guia') c.innerHTML = renderGuia();
+  attachListeners();
+  c.scrollTop = 0;
+}
+
+// ============================================================
+// RESET TASK
+// ============================================================
+function resetTask() {
+  currentStep = 0;
+  taskData = { situacion:'', pensamientos:[], emociones:[{emocion:'Colera / Ira',intensidad:5},{emocion:'',intensidad:5}], distorsiones:[], cuestionamiento:'', alternativa:'' };
+  pensInput = '';
+  render();
+}
+
+// ============================================================
+// STEP DOTS
+// ============================================================
+function stepsHTML() {
+  const labels = ['A','B','C','D','E'];
+  return `<div class="step-header">
+    <div class="step-dots">
+      ${labels.map((l,i) => `<div class="step-dot ${i < currentStep ? 'done' : i === currentStep ? 'active' : ''}"></div>`).join('')}
+    </div>
+    <span class="step-label">Paso ${labels[currentStep]} de 5</span>
+  </div>`;
+}
+
+// ============================================================
+// RENDER NUEVA TAREA
+// ============================================================
+function renderNueva() {
+  const steps = [renderStepA, renderStepB, renderStepC, renderStepD, renderStepE];
+  return stepsHTML() + `<div class="section">${steps[currentStep]()}</div>`;
+}
+
+function renderStepA() {
+  return `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div class="step-letter">A</div>
+      <div>
+        <div class="step-title">Acontecimiento</div>
+        <div style="font-size:0.72rem;color:var(--text3);font-family:'Courier New',monospace;">Situacion activadora</div>
+      </div>
+    </div>
+    <p class="step-desc">Describe la situacion concreta tal como ocurrio, sin interpretar ni juzgar. Solo los hechos observables.</p>
+    <div class="field">
+      <label>¿Que paso? Describe la situacion de forma objetiva</label>
+      <textarea id="inputA" placeholder="Ej: Estaba en una reunion y mi jefe hizo un comentario sobre mi informe frente a todos..." rows="5">${escapeHtml(taskData.situacion)}</textarea>
+    </div>
+    <button class="btn btn-primary" onclick="nextStep()">
+      Continuar a mis pensamientos
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>`;
+}
+
+function renderStepB() {
+  const chips = taskData.pensamientos.map((p,i) =>
+    `<span class="chip">${escapeHtml(p)}<button class="chip-del" onclick="deletePens(${i})" title="Eliminar">x</button></span>`
+  ).join('');
+  return `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div class="step-letter" style="background:var(--warm)">B</div>
+      <div>
+        <div class="step-title">Creencias y Pensamientos</div>
+        <div style="font-size:0.72rem;color:var(--text3);font-family:'Courier New',monospace;">Pensamientos automaticos</div>
+      </div>
+    </div>
+    <p class="step-desc">¿Que te dijiste a ti mismo? Escribe tus pensamientos automaticos tal como te vinieron a la cabeza, sin filtrarlos.</p>
+    <div class="field">
+      <label>Escribe un pensamiento y pulsa "Añadir"</label>
+      <div class="chip-input-row">
+        <input type="text" id="inputPens" placeholder="Ej: Soy un incompetente..." value="${escapeHtml(pensInput)}">
+        <button class="btn btn-secondary btn-sm" onclick="addPens()">Añadir</button>
+      </div>
+    </div>
+    ${chips ? `<div class="chip-list" style="margin-bottom:14px;">${chips}</div>` : ''}
+    ${taskData.pensamientos.length === 0 ? '<p style="font-size:0.78rem;color:var(--text3);margin-bottom:14px;">Aun no has añadido pensamientos.</p>' : ''}
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Atras
+      </button>
+      <button class="btn btn-primary" onclick="nextStep()">
+        Continuar
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>`;
+}
+
+function renderStepC() {
+  const emList = taskData.emociones.length > 0 ? taskData.emociones : [{emocion:'Colera / Ira',intensidad:5}];
+  const rows = emList.map((em,i) => {
+    const opts = EMOCIONES.map(e => `<option value="${e}" ${em.emocion===e?'selected':''}>${e}</option>`).join('');
+    return `<div style="margin-bottom:14px;background:var(--bg2);border-radius:var(--radius-sm);padding:12px;">
+      <div class="emotion-row">
+        <select onchange="updateEmocion(${i},'emocion',this.value)">${opts}</select>
+        <button class="emotion-del" onclick="removeEmocion(${i})" title="Quitar">x</button>
+      </div>
+      <label>Intensidad: <strong id="emVal${i}">${em.intensidad}/10</strong></label>
+      <div class="slider-wrap">
+        <span style="font-size:0.75rem;color:var(--text3)">0</span>
+        <input type="range" min="0" max="10" value="${em.intensidad}" oninput="updateEmocionInt(${i},this.value)" id="slider${i}">
+        <span style="font-size:0.75rem;color:var(--text3)">10</span>
+        <span class="slider-val">${em.intensidad}</span>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div class="step-letter" style="background:var(--danger)">C</div>
+      <div>
+        <div class="step-title">Consecuencia Emocional</div>
+        <div style="font-size:0.72rem;color:var(--text3);font-family:'Courier New',monospace;">¿Como me senti?</div>
+      </div>
+    </div>
+    <p class="step-desc">¿Que emociones sentiste? Selecciona todas las que correspondan y califica su intensidad del 0 al 10.</p>
+    ${rows}
+    <button class="btn btn-secondary" onclick="addEmocion()" style="margin-bottom:14px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Añadir otra emocion
+    </button>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Atras
+      </button>
+      <button class="btn btn-primary" onclick="nextStep()">
+        Continuar
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>`;
+}
+
+function renderStepD() {
+  const checked = new Set(taskData.distorsiones);
+  const items = DISTORSIONES.map(d => {
+    const isChecked = checked.has(d.id);
+    const qs = isChecked ? d.preguntas.map(q => `<div class="dist-question">${escapeHtml(q)}</div>`).join('') : '';
+    return `<div class="dist-item ${isChecked?'checked':''}" id="distItem${d.id}">
+      <div class="dist-check-row" onclick="toggleDist(${d.id})">
+        <input type="checkbox" ${isChecked?'checked':''} onclick="event.stopPropagation();toggleDist(${d.id})">
+        <div>
+          <div class="dist-check-name">${d.nombre}</div>
+          <div class="dist-check-def">${d.desc}</div>
+        </div>
+      </div>
+      ${isChecked && qs ? `<div class="dist-questions">${qs}</div>` : ''}
+    </div>`;
+  }).join('');
+  return `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div class="step-letter" style="background:var(--accent2)">D</div>
+      <div>
+        <div class="step-title">Disputa y Cuestionamiento</div>
+        <div style="font-size:0.72rem;color:var(--text3);font-family:'Courier New',monospace;">Detectar y cuestionar</div>
+      </div>
+    </div>
+    <p class="step-desc">Marca las distorsiones cognitivas que aparecen en tus pensamientos del paso B. Al marcar una, veras preguntas para cuestionarla.</p>
+    ${taskData.pensamientos.length > 0 ? `<div style="background:var(--warm-light);border-radius:var(--radius-sm);padding:10px 13px;margin-bottom:12px;">
+      <div style="font-size:0.68rem;color:var(--warm);font-family:'Courier New',monospace;letter-spacing:0.05em;margin-bottom:4px;">TUS PENSAMIENTOS (paso B)</div>
+      ${taskData.pensamientos.map(p => `<div style="font-size:0.82rem;color:var(--text);font-style:italic;margin-bottom:3px;">"${escapeHtml(p)}"</div>`).join('')}
+    </div>` : ''}
+    <div style="margin-bottom:14px;">${items}</div>
+    <div class="field">
+      <label>¿Que podrias preguntarte tu mismo? (reflexion libre)</label>
+      <textarea id="inputD" placeholder="Ej: ¿Tengo pruebas reales de esto? ¿Lo veria igual mañana?..." rows="3">${escapeHtml(taskData.cuestionamiento)}</textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Atras
+      </button>
+      <button class="btn btn-primary" onclick="nextStep()">
+        Continuar
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>`;
+}
+
+function renderStepE() {
+  return `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div class="step-letter" style="background:#6b8f62">E</div>
+      <div>
+        <div class="step-title">Efecto y Creencia Racional</div>
+        <div style="font-size:0.72rem;color:var(--text3);font-family:'Courier New',monospace;">Alternativa flexible y realista</div>
+      </div>
+    </div>
+    <p class="step-desc">Escribe una alternativa mas flexible, realista y adaptativa a los pensamientos del paso B. No tiene que ser un pensamiento positivo forzado, sino uno razonable y equilibrado.</p>
+    <div style="background:var(--accent-light);border-radius:var(--radius-sm);padding:10px 13px;margin-bottom:14px;">
+      <div style="font-size:0.72rem;color:var(--accent);margin-bottom:4px;font-style:italic;">Ejemplo de alternativa racional:</div>
+      <div style="font-size:0.82rem;color:var(--text2);">"Prefiero que esto funcione bien, y me molesta que no lo haya hecho, pero eso no significa que sea un fracaso total. Puedo aprender de esto."</div>
+    </div>
+    <div class="field">
+      <label>Escribe tu creencia alternativa y mas racional</label>
+      <textarea id="inputE" placeholder="Ej: Me frustra que no saliera bien, pero no soy un fracasado por eso. Puedo intentarlo de otra forma..." rows="5">${escapeHtml(taskData.alternativa)}</textarea>
+    </div>
+    <div class="btn-row" style="margin-bottom:10px;">
+      <button class="btn btn-secondary" onclick="prevStep()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Atras
+      </button>
+      <button class="btn btn-primary" onclick="saveTask()" style="background:#6b8f62;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Guardar tarea
+      </button>
+    </div>`;
+}
+
+// ============================================================
+// STEP ACTIONS
+// ============================================================
+function nextStep() {
+  if (currentStep === 0) {
+    const val = document.getElementById('inputA') ? document.getElementById('inputA').value.trim() : '';
+    if (!val) { showToast('Describe la situacion antes de continuar.'); return; }
+    taskData.situacion = val;
+  } else if (currentStep === 1) {
+    const val = document.getElementById('inputPens') ? document.getElementById('inputPens').value.trim() : '';
+    if (val) { taskData.pensamientos.push(val); pensInput = ''; }
+    if (taskData.pensamientos.length === 0) { showToast('Añade al menos un pensamiento automatico.'); return; }
+  } else if (currentStep === 2) {
+    const em = taskData.emociones.filter(e => e.emocion && e.emocion !== '');
+    if (em.length === 0) { showToast('Selecciona al menos una emocion.'); return; }
+    taskData.emociones = em;
+  } else if (currentStep === 3) {
+    const val = document.getElementById('inputD') ? document.getElementById('inputD').value.trim() : '';
+    taskData.cuestionamiento = val;
+  }
+  if (currentStep < 4) { currentStep++; render(); }
+}
+function prevStep() {
+  if (currentStep === 3) {
+    const val = document.getElementById('inputD') ? document.getElementById('inputD').value.trim() : '';
+    taskData.cuestionamiento = val;
+  }
+  if (currentStep > 0) { currentStep--; render(); }
+}
+function addPens() {
+  const inp = document.getElementById('inputPens');
+  const val = inp ? inp.value.trim() : '';
+  if (!val) { showToast('Escribe un pensamiento primero.'); return; }
+  taskData.pensamientos.push(val);
+  pensInput = '';
+  render();
+}
+function deletePens(i) {
+  taskData.pensamientos.splice(i, 1);
+  render();
+}
+function addEmocion() {
+  taskData.emociones.push({emocion:'Ansiedad', intensidad:5});
+  render();
+}
+function removeEmocion(i) {
+  if (taskData.emociones.length <= 1) { showToast('Debe haber al menos una emocion.'); return; }
+  taskData.emociones.splice(i, 1);
+  render();
+}
+function updateEmocion(i, field, val) {
+  taskData.emociones[i][field] = val;
+}
+function updateEmocionInt(i, val) {
+  taskData.emociones[i].intensidad = parseInt(val);
+  const label = document.getElementById('emVal' + i);
+  if (label) label.textContent = val + '/10';
+  const slider = document.getElementById('slider' + i);
+  if (slider) {
+    const sibling = slider.parentElement.querySelector('.slider-val');
+    if (sibling) sibling.textContent = val;
+  }
+}
+function toggleDist(id) {
+  const idx = taskData.distorsiones.indexOf(id);
+  if (idx >= 0) taskData.distorsiones.splice(idx, 1);
+  else taskData.distorsiones.push(id);
+  render();
+  document.getElementById('mainContent').scrollTop = 300;
+}
+
+// ============================================================
+// SAVE TASK
+// ============================================================
+function saveTask() {
+  const val = document.getElementById('inputE') ? document.getElementById('inputE').value.trim() : '';
+  if (!val) { showToast('Escribe tu alternativa racional antes de guardar.'); return; }
+  taskData.alternativa = val;
+  const task = {
+    id: Date.now(),
+    fecha: new Date().toLocaleString('es-ES', {dateStyle:'short', timeStyle:'short'}),
+    situacion: taskData.situacion,
+    pensamientos: [...taskData.pensamientos],
+    emociones: taskData.emociones.filter(e=>e.emocion),
+    distorsiones: [...taskData.distorsiones],
+    cuestionamiento: taskData.cuestionamiento,
+    alternativa: taskData.alternativa
+  };
+  tasks.unshift(task);
+  saveTasks();
+  showToast('Tarea guardada correctamente.');
+  setTimeout(() => {
+    resetTask();
+    showTab('historial');
+  }, 800);
+}
+
+// ============================================================
+// RENDER DISTORSIONES LIBRARY
+// ============================================================
+function renderDistorsiones() {
+  const items = DISTORSIONES.map(d => `
+    <div class="dist-lib-item">
+      <div class="dist-lib-num">#${d.id}</div>
+      <div class="dist-lib-name">${d.nombre}</div>
+      <div class="dist-lib-def">${d.desc}</div>
+      <div class="dist-lib-example">"${escapeHtml(d.ejemplo)}"</div>
+      <div class="dist-lib-qs">
+        ${d.preguntas.map(q=>`<div class="dist-lib-q">${escapeHtml(q)}</div>`).join('')}
+      </div>
+    </div>`).join('');
+  return `<div class="section">
+    <div style="margin-bottom:16px;">
+      <h2 style="font-size:1.05rem;color:var(--text);margin-bottom:4px;">Las 15+1 Distorsiones Cognitivas</h2>
+      <p style="font-size:0.78rem;color:var(--text3);line-height:1.5;">Segun Aaron Beck y popularizadas por David Burns. Aprende a reconocerlas en tus propios pensamientos.</p>
+    </div>
+    ${items}
+  </div>`;
+}
+
+// ============================================================
+// RENDER HISTORIAL
+// ============================================================
+function renderHistorial() {
+  if (tasks.length === 0) return `<div class="section">
+    <div class="empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <p>No hay tareas guardadas aun.<br>Completa tu primer ejercicio ABCDE.</p>
+    </div>
+  </div>`;
+
+  const items = tasks.map(t => {
+    const distNames = t.distorsiones.map(id => {
+      const d = DISTORSIONES.find(x=>x.id===id);
+      return d ? `<span class="dist-badge">${d.nombre}</span>` : '';
+    }).join('');
+    const emBadges = t.emociones.map(e=>`<span class="emotion-badge">${e.emocion} ${e.intensidad}/10</span>`).join('');
+    const isOpen = expandedTasks[t.id];
+    const pensList = (t.pensamientos||[]).map(p=>`<div style="font-style:italic;margin-bottom:3px;">"${escapeHtml(p)}"</div>`).join('');
+    const expanded = isOpen ? `<div class="hist-expanded open">
+      <div class="hist-section">
+        <div class="hist-section-label">A — Situacion</div>
+        <div class="hist-section-content">${escapeHtml(t.situacion)}</div>
+      </div>
+      <div class="hist-section">
+        <div class="hist-section-label">B — Pensamientos</div>
+        <div class="hist-section-content">${pensList}</div>
+      </div>
+      <div class="hist-section">
+        <div class="hist-section-label">C — Emociones</div>
+        <div class="hist-section-content">${t.emociones.map(e=>`${e.emocion}: ${e.intensidad}/10`).join(' · ')}</div>
+      </div>
+      ${t.distorsiones.length>0?`<div class="hist-section">
+        <div class="hist-section-label">D — Distorsiones detectadas</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;">${distNames}</div>
+        ${t.cuestionamiento?`<div class="hist-section-content" style="font-style:italic;margin-top:6px;">"${escapeHtml(t.cuestionamiento)}"</div>`:''}
+      </div>`:''}
+      <div class="hist-section">
+        <div class="hist-section-label">E — Alternativa racional</div>
+        <div class="hist-section-content" style="background:var(--accent-light);padding:8px 11px;border-radius:var(--radius-sm);font-style:italic;">"${escapeHtml(t.alternativa)}"</div>
+      </div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn btn-whatsapp btn-sm" onclick="shareWhatsapp(${t.id})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.555 4.122 1.528 5.855L.057 23.885l6.186-1.623A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.648-.491-5.172-1.352l-.371-.22-3.673.964.979-3.584-.241-.385A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          Compartir
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          Eliminar
+        </button>
+      </div>
+    </div>` : '<div class="hist-expanded"></div>';
+    return `<div class="hist-item">
+      <div class="hist-date">${t.fecha}</div>
+      <div class="hist-situation">${escapeHtml(t.situacion.substring(0,100))}${t.situacion.length>100?'...':''}</div>
+      <div class="hist-emotions">${emBadges}${distNames}</div>
+      <button class="toggle-btn" onclick="toggleExpand(${t.id})">${isOpen?'Ocultar detalle':'Ver detalle completo'} ${isOpen?'▲':'▼'}</button>
+      ${expanded}
+    </div>`;
+  }).join('');
+
+  return `<div class="section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h2 style="font-size:1rem;color:var(--text);">Mis ejercicios (${tasks.length})</h2>
+      <button class="btn btn-danger btn-sm" onclick="clearAll()">Limpiar todo</button>
+    </div>
+    ${items}
+  </div>`;
+}
+
+function toggleExpand(id) {
+  expandedTasks[id] = !expandedTasks[id];
+  render();
+}
+function deleteTask(id) {
+  openConfirm('Eliminar tarea', '¿Seguro que quieres eliminar esta tarea? Esta accion no se puede deshacer.', () => {
+    tasks = tasks.filter(t=>t.id!==id);
+    saveTasks();
+    render();
+    showToast('Tarea eliminada.');
+  });
+}
+function clearAll() {
+  openConfirm('Limpiar historial', '¿Seguro que quieres eliminar TODAS las tareas guardadas? Esta accion es irreversible.', () => {
+    tasks = [];
+    saveTasks();
+    render();
+    showToast('Historial borrado.');
+  });
+}
+
+// ============================================================
+// WHATSAPP SHARE
+// ============================================================
+function shareWhatsapp(id) {
+  const t = tasks.find(x=>x.id===id);
+  if (!t) return;
+  const distNames = t.distorsiones.map(did => {
+    const d = DISTORSIONES.find(x=>x.id===did);
+    return d ? d.nombre : '';
+  }).filter(Boolean).join(', ');
+  let msg = `*Mi ejercicio de Autocontrol Emocional (ABCDE)*\n`;
+  msg += `_Fecha: ${t.fecha}_\n\n`;
+  msg += `*A - Situacion:*\n${t.situacion}\n\n`;
+  msg += `*B - Pensamientos automaticos:*\n${t.pensamientos.map(p=>`- "${p}"`).join('\n')}\n\n`;
+  msg += `*C - Emociones:*\n${t.emociones.map(e=>`- ${e.emocion}: ${e.intensidad}/10`).join('\n')}\n\n`;
+  if (t.distorsiones.length > 0) {
+    msg += `*D - Distorsiones detectadas:*\n${distNames}\n`;
+    if (t.cuestionamiento) msg += `Reflexion: "${t.cuestionamiento}"\n`;
+    msg += '\n';
+  }
+  msg += `*E - Alternativa racional:*\n"${t.alternativa}"\n\n`;
+  msg += `_(Generado con la app Autocontrol Emocional - Metodo ABCDE de Ellis & Beck)_`;
+  const encoded = encodeURIComponent(msg);
+  window.open('https://wa.me/?text=' + encoded, '_blank');
+}
+
+// ============================================================
+// RENDER GUIA
+// ============================================================
+function renderGuia() {
+  return `<div>
+    <div class="guide-hero">
+      <h2>Guia de uso: Metodo ABCDE</h2>
+      <p>Aprende a manejar tus emociones con la Terapia Racional Emotivo-Conductual de Albert Ellis y las distorsiones cognitivas de Aaron Beck.</p>
+    </div>
+    <div class="section">
+      <div class="card guide-section">
+        <h3>El principio fundamental</h3>
+        <p>No son los hechos lo que te perturba emocionalmente, sino <strong>lo que te dices a ti mismo</strong> sobre esos hechos. El mismo acontecimiento puede generar reacciones muy distintas en personas diferentes.</p>
+        <div class="abc-diagram">
+          <div class="abc-box"><div class="abc-letter">A</div><div class="abc-name">Acontecimiento<br>activador</div></div>
+          <div class="abc-box"><div class="abc-letter">B</div><div class="abc-name">Beliefs<br>(Creencias)</div></div>
+          <div class="abc-box"><div class="abc-letter">C</div><div class="abc-name">Consecuencia<br>emocional</div></div>
+        </div>
+        <p style="font-size:0.8rem;color:var(--accent);font-style:italic;margin-top:8px;">A no causa C directamente. B (lo que te dices) es la clave.</p>
+      </div>
+
+      <div class="card guide-section">
+        <h3>El modelo completo ABCDE</h3>
+        <ol>
+          <li><strong>A - Acontecimiento:</strong> La situacion objetiva que ocurrio.</li>
+          <li><strong>B - Beliefs (Creencias):</strong> Tus pensamientos automaticos sobre esa situacion.</li>
+          <li><strong>C - Consecuencia:</strong> La emocion que sientes como resultado.</li>
+          <li><strong>D - Disputa:</strong> Cuestionar y debatir las creencias irracionales.</li>
+          <li><strong>E - Efecto:</strong> Nueva creencia mas flexible y adaptativa.</li>
+        </ol>
+      </div>
+
+      <div class="card guide-section">
+        <h3>Como usar esta app</h3>
+        <ol>
+          <li>Cuando sientas una emocion intensa, toca "Nueva Tarea".</li>
+          <li>Describe la situacion (A) sin juzgar, solo los hechos.</li>
+          <li>Escribe lo que te dijiste a ti mismo (B), sin filtros.</li>
+          <li>Identifica tu emocion y su intensidad (C).</li>
+          <li>Marca las distorsiones cognitivas (D) y reflexiona.</li>
+          <li>Escribe una alternativa racional (E).</li>
+          <li>Guarda la tarea y revisala en Historial.</li>
+        </ol>
+      </div>
+
+      <div class="card guide-section">
+        <h3>Que son las distorsiones cognitivas</h3>
+        <p>Son "errores de pensamiento" automaticos que distorsionan la realidad y amplifican el sufrimiento emocional. No son defectos: todos los tenemos. Reconocerlos es el primer paso para cambiarlos.</p>
+        <p style="margin-top:6px;">Visita la pestaña <strong>Dist.</strong> para ver las 15+1 distorsiones con ejemplos y preguntas de cuestionamiento.</p>
+      </div>
+
+      <div class="example-tag">Ejemplo de tarea completa</div>
+      <div class="example-task">
+        <div class="hist-section" style="margin-bottom:9px;">
+          <div class="hist-section-label">A — Situacion</div>
+          <div class="hist-section-content">La app Chatly no realizo bien el trabajo que le pedi.</div>
+        </div>
+        <div class="hist-section" style="margin-bottom:9px;">
+          <div class="hist-section-label">B — Pensamientos automaticos</div>
+          <div class="hist-section-content" style="font-style:italic;">"Maquina de mierda que no sabe hacer nada" · "Incompetente" · "Nunca hace las cosas bien"</div>
+        </div>
+        <div class="hist-section" style="margin-bottom:9px;">
+          <div class="hist-section-label">C — Emocion</div>
+          <div><span class="emotion-badge">Colera / Ira 8/10</span></div>
+        </div>
+        <div class="hist-section" style="margin-bottom:9px;">
+          <div class="hist-section-label">D — Distorsiones detectadas</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;">
+            <span class="dist-badge">Etiquetado global ("incompetente", "maquina de mierda")</span>
+            <span class="dist-badge">Sobregeneralizacion ("nunca hace nada bien")</span>
+          </div>
+          <div style="font-size:0.78rem;color:var(--accent);font-style:italic;">"¿Es cierto que 'nunca'? ¿Que evidencia hay de que es totalmente inutil?"</div>
+        </div>
+        <div class="hist-section">
+          <div class="hist-section-label">E — Alternativa racional</div>
+          <div class="hist-section-content" style="background:var(--accent-light);padding:8px 11px;border-radius:var(--radius-sm);font-style:italic;">"Me frustra que no haya salido bien; es molesto, pero no todo lo que hace es malo ni es inutil. Puedo pedir ayuda o intentarlo de otra forma."</div>
+        </div>
+      </div>
+
+      <div style="height:8px;"></div>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// ATTACH LISTENERS (for inline oninput events needing live sync)
+// ============================================================
+function attachListeners() {
+  const inpA = document.getElementById('inputA');
+  if (inpA) inpA.addEventListener('input', e => { taskData.situacion = e.target.value; });
+  const inpPens = document.getElementById('inputPens');
+  if (inpPens) {
+    inpPens.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addPens(); } });
+    inpPens.addEventListener('input', e => { pensInput = e.target.value; });
+  }
+  const inpD = document.getElementById('inputD');
+  if (inpD) inpD.addEventListener('input', e => { taskData.cuestionamiento = e.target.value; });
+  const inpE = document.getElementById('inputE');
+  if (inpE) inpE.addEventListener('input', e => { taskData.alternativa = e.target.value; });
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadTasks();
+resetTask();
+</script>
+</body>
+</html>
